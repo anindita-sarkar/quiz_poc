@@ -20,12 +20,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = "com.cyberaka.quiz.domain")
 @ComponentScan(basePackages = { "com.cyberaka.quiz", "com.cyberaka.quiz.rest", "com.cyberaka.quiz.dao",
 		"com.cyberaka.quiz.service.impl" })
-public class QuizBootApplication extends SpringBootServletInitializer {
+public class QuizBootApplication { //extends SpringBootServletInitializer {
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(QuizBootApplication.class);
-	}
+//	@Override
+//	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//		return application.sources(QuizBootApplication.class);
+//	}
 
 	static final Logger LOG = Logger.getLogger(QuizBootApplication.class.getName());
 

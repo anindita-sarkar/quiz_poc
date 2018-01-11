@@ -1,19 +1,7 @@
 server:
   port: 7070
 spring: 
-  datasource: 
-    autoReconnect: true
-    driver-class-name: com.mysql.jdbc.Driver
-    password: ${QUIZ_CONNECTION_PASSWORD}
-    testOnBorrow: true
-    url: ${QUIZ_CONNECTION_STRING}
-    username: ${QUIZ_CONNECTION_USER}
-    validationQuery: "SELECT 1"
-  jpa: 
-    hibernate:
-      ddl-auto: create
-      dialect: org.hibernate.dialect.MySQL5Dialect
-  thymeleaf:
+   thymeleaf:
     cache: false
 data:
   file: ${QUIZ_DATA_FOLDER}

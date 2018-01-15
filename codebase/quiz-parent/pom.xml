@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.8.RELEASE</version>
+        <version>1.5.9.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -23,6 +23,7 @@
         <module>quiz-service</module>
         <module>quiz-domain</module>
         <module>quiz-ws</module>
+		<module>quiz-mobile-ui-facade</module>
     </modules>
 
     <properties>

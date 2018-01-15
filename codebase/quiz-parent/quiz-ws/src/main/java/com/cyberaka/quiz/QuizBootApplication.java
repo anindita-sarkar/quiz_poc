@@ -14,6 +14,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 /**
  * Entry point into the quiz boot application.
  *
@@ -21,7 +23,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
  */
 
 @SpringBootApplication
-
+@EnableSwagger2
 public class QuizBootApplication { // extends SpringBootServletInitializer {
 
 	// @Override

@@ -65,7 +65,7 @@ public class QuestionController {
 
     @RequestMapping(value="/quiz/{userId}", method=RequestMethod.POST)
     @ResponseBody
-    public void submitQuizAnswer(Model model, @PathVariable("userId") int userId, @RequestBody QuestionAnswerDto[] body) throws QuizSecurityException {
+    public void submitQuizAnswer( @PathVariable("userId") int userId, @RequestBody QuestionAnswerDto[] body) throws QuizSecurityException {
         System.out.println("Received answer submitted by user " + userId);
         System.out.println(body);
         User user = userService.find(userId);

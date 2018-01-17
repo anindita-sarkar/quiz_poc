@@ -1,0 +1,16 @@
+QUIZ_CONNECTION_STRING=jdbc:mysql://localhost:3306/quiz_dev
+QUIZ_CONNECTION_USER=quiz_dev
+QUIZ_CONNECTION_PASSWORD=quiz_dev
+QUIZ_DATA_FOLDER=D:\KG_ML\kg\quiz\quiz_poc\documents\data_bank\Quiz_Question_Bank.xlsx
+QUIZ_RESULT_FOLDER=D:\KG_ML\kg\quiz\quiz_poc\output
+QUIZ_FONT_FILE=D:\KG_ML\kg\quiz\quiz_poc\codebase\quiz-parent\quiz-ws\src\main\resources\Arial_Unicode.ttf
+
+
+quiz-cloud-config-server 8888
+quiz-ws 8000
+quiz-mobile-ui-facade 8100
+quiz-netflix-eureka-naming-server 8761
+zuul 8765
+
+zipkin: http://localhost:9411/
+eureka: http://localhost:8761/

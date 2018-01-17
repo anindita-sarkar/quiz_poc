@@ -25,6 +25,7 @@
 		<module>quiz-mobile-ui-facade</module>
 		<module>quiz-cloud-config-server</module>
 		<module>quiz-netflix-eureka-naming-server</module>
+		<module>quiz-netflix-zuul-api-gateway-server</module>
 	</modules>
 
 	<properties>

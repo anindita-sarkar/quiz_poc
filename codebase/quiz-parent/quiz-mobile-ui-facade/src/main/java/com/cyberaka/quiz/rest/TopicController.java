@@ -13,7 +13,6 @@ public class TopicController {
 
 	@GetMapping("/topics")
 	public ResponseEntity<String> listTopics() {
-
 		RestTemplate restTemplate = new RestTemplate();
 		String updatedResourceUrl = resourceUrl + "topics";
 		ResponseEntity<String> response = restTemplate.getForEntity(updatedResourceUrl, String.class);

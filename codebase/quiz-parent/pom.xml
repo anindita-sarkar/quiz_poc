@@ -24,6 +24,7 @@
         <module>quiz-domain</module>
         <module>quiz-ws</module>
 		<module>quiz-mobile-ui-facade</module>
+		<module>quiz-cloud-config-server</module>
     </modules>
 
     <properties>

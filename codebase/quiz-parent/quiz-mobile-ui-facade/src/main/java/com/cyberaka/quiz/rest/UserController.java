@@ -3,6 +3,8 @@ package com.cyberaka.quiz.rest;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class UserController {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Environment env;
@@ -29,6 +32,7 @@ public class UserController {
 		RestTemplate restTemplate = new RestTemplate();
 		String updatedResourceUrl = env.getProperty("ws.url") + "login?userName={userName}&userPassword={userPassword}";
 		ResponseEntity<String> response = restTemplate.getForEntity(updatedResourceUrl, String.class, uriVariables);
+		logger.info(">>"+response);
 		return response;
 	}
 
@@ -38,6 +42,7 @@ public class UserController {
 
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<String> response = proxy.login(userName, userPassword);
+		logger.info(">>"+response);
 		return response;
 	}
 }

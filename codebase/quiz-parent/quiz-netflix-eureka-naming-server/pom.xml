@@ -12,19 +12,16 @@
 	<packaging>jar</packaging>
 	<name>Quiz netflix eureka naming server</name>
 	<dependencies>
+
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka-server</artifactId>
+			<version>${spring-cloud.version}</version>
 		</dependency>
-		<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-eureka-server</artifactId>
-    <version>1.4.2.RELEASE</version>
-</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>1.4.1.RELEASE</version>
+			<version>${spring-cloud.version}</version>
 		</dependency>
 	</dependencies>
 </project>

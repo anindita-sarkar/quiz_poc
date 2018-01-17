@@ -15,7 +15,13 @@
 		<version>1.5.7.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>1.3.1.RELEASE</spring-cloud.version>
+		<docker.image.prefix>cyberaka</docker.image.prefix>
+	</properties>
 	<modules>
 		<module>quiz-common</module>
 		<module>quiz-dao</module>
@@ -27,11 +33,7 @@
 		<module>quiz-netflix-eureka-naming-server</module>
 		<module>quiz-netflix-zuul-api-gateway-server</module>
 	</modules>
-
-	<properties>
-		<docker.image.prefix>cyberaka</docker.image.prefix>
-	</properties>
-
+	
 	<build>
 		<pluginManagement>
 			<plugins>

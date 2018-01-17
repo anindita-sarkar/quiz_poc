@@ -3,6 +3,8 @@ package com.cyberaka.quiz.rest;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class QuestionController {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Value("${ws.url}")
 	private String resourceUrl;
 	@Autowired
@@ -22,7 +26,7 @@ public class QuestionController {
 	public ResponseEntity<String> getQuiz(@PathVariable("topicId") int topicId,
 			@PathVariable("subTopicId") int subTopicId, @PathVariable("level") int level,
 			@PathVariable("count") int count) {
-		
+	
 		Map<String,String> uriVariables=new HashMap<String, String>();
 		uriVariables.put("topicId", ""+topicId);
 		uriVariables.put("subTopicId", ""+subTopicId);
@@ -33,6 +37,7 @@ public class QuestionController {
 		
 		String updatedResourceUrl = resourceUrl + "quiz/{topicId}/{subTopicId}/{level}/{count}";
 		ResponseEntity<String> response = restTemplate.getForEntity(updatedResourceUrl, String.class,uriVariables);
+		logger.info(">>"+response);
 		return response;
 	}
 
@@ -42,6 +47,7 @@ public class QuestionController {
 			@PathVariable("subTopicId") int subTopicId, @PathVariable("level") int level,
 			@PathVariable("count") int count) {
 		ResponseEntity<String> response = proxy.getQuiz(topicId, subTopicId, level, count);
+		logger.info(">>"+response);
 		return response;
 	}
 	

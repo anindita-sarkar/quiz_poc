@@ -3,6 +3,9 @@ package com.cyberaka.quiz.rest;
 import com.cyberaka.quiz.domain.SubTopic;
 import com.cyberaka.quiz.dto.SubTopicDto;
 import com.cyberaka.quiz.service.SubTopicService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,8 @@ import java.util.List;
 
 @RestController
 public class SubTopicController {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     SubTopicService subTopicService;
 
@@ -27,6 +32,7 @@ public class SubTopicController {
             dto.clone(subTopic);
             results.add(dto);
         }
+        logger.info(">>"+results);
         return results;
     }
 }

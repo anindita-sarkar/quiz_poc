@@ -10,6 +10,9 @@ import com.cyberaka.quiz.dto.UserDto;
 import com.cyberaka.quiz.dto.common.exception.QuizSecurityException;
 import com.cyberaka.quiz.service.QuestionService;
 import com.cyberaka.quiz.service.UserService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -33,116 +36,120 @@ import java.util.stream.Collectors;
 
 @RestController
 public class QuestionController {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    QuestionService questionService;
+	@Autowired
+	QuestionService questionService;
 
-    @Autowired
-    UserService userService;
+	@Autowired
+	UserService userService;
 
-    @Autowired
-    PdfGenaratorUtil pdfGenaratorUtil;
+	@Autowired
+	PdfGenaratorUtil pdfGenaratorUtil;
 
-    @Value("${data.result_output}")
-    String dataResultOutputFolder;
+	@Value("${data.result_output}")
+	String dataResultOutputFolder;
 
-    @Value("${data.font_file}")
-    String dataFontFile;
+	@Value("${data.font_file}")
+	String dataFontFile;
 
-    @RequestMapping("/quiz/{topicId}/{subTopicId}/{level}/{count}")
-    @ResponseBody
-    public List<QuestionDto> getQuiz(@PathVariable("topicId") int topicId, @PathVariable("subTopicId") int subTopicId,
-                                     @PathVariable("level") int level, @PathVariable("count") int count) {
-        Iterable<Question> questions = questionService.findQuiz(topicId, subTopicId, level, count);
-        List<QuestionDto> results = new ArrayList<QuestionDto>();
-        for (Question question : questions) {
-            QuestionDto dto = new QuestionDto();
-            dto.clone(question);
-            results.add(dto);
-        }
-        return results;
-    }
+	@RequestMapping("/quiz/{topicId}/{subTopicId}/{level}/{count}")
+	@ResponseBody
+	public List<QuestionDto> getQuiz(@PathVariable("topicId") int topicId, @PathVariable("subTopicId") int subTopicId,
+			@PathVariable("level") int level, @PathVariable("count") int count) {
+		Iterable<Question> questions = questionService.findQuiz(topicId, subTopicId, level, count);
+		List<QuestionDto> results = new ArrayList<QuestionDto>();
+		for (Question question : questions) {
+			QuestionDto dto = new QuestionDto();
+			dto.clone(question);
+			results.add(dto);
+		}
+		logger.info(">>"+results);
+		return results;
+	}
 
-    @RequestMapping(value="/quiz/{userId}", method=RequestMethod.POST)
-    @ResponseBody
-    public void submitQuizAnswer( @PathVariable("userId") int userId, @RequestBody QuestionAnswerDto[] body) throws QuizSecurityException {
-        System.out.println("Received answer submitted by user " + userId);
-        System.out.println(body);
-        User user = userService.find(userId);
-        if (user == null) {
-            throw new QuizSecurityException("No valid user id provided!");
-        }
-        Map<String,Object> data = new HashMap<String,Object>();
-        data.put("name",user.getName());
+	@RequestMapping(value = "/quiz/{userId}", method = RequestMethod.POST)
+	@ResponseBody
+	public void submitQuizAnswer(@PathVariable("userId") int userId, @RequestBody QuestionAnswerDto[] body)
+			throws QuizSecurityException {
+		System.out.println("Received answer submitted by user " + userId);
+		System.out.println(body);
+		User user = userService.find(userId);
+		if (user == null) {
+			throw new QuizSecurityException("No valid user id provided!");
+		}
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("name", user.getName());
 
-        //Get current date time
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-        DateTimeFormatter fileFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy h-mm-a");
-        String formatDate = now.format(dateFormatter);
-        String formatTime = now.format(timeFormatter);
-        String fileFormatterStr = now.format(fileFormatter);
-        data.put("date_of_examination", formatDate);
-        data.put("time_of_examination", formatTime);
+		// Get current date time
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+		DateTimeFormatter fileFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy h-mm-a");
+		String formatDate = now.format(dateFormatter);
+		String formatTime = now.format(timeFormatter);
+		String fileFormatterStr = now.format(fileFormatter);
+		data.put("date_of_examination", formatDate);
+		data.put("time_of_examination", formatTime);
 
-        ArrayList<CandidateResultDto> resultList = new ArrayList<>();
-        int sl = 0;
-        int score = 0;
-        for (QuestionAnswerDto dto: body) {
-            CandidateResultDto templateDto = new CandidateResultDto();
-            templateDto.setQuestionNumber(++sl);
-            templateDto.setQuestion(dto.getQuestion());
-            templateDto.setAnswer(dto.getAnswers().stream().map(Object::toString).collect(Collectors.joining(",")));
-            templateDto.setCandidateAnswer(dto.getUserAnswers().stream().map(Object::toString).collect(Collectors.joining(",")));
+		ArrayList<CandidateResultDto> resultList = new ArrayList<>();
+		int sl = 0;
+		int score = 0;
+		for (QuestionAnswerDto dto : body) {
+			CandidateResultDto templateDto = new CandidateResultDto();
+			templateDto.setQuestionNumber(++sl);
+			templateDto.setQuestion(dto.getQuestion());
+			templateDto.setAnswer(dto.getAnswers().stream().map(Object::toString).collect(Collectors.joining(",")));
+			templateDto.setCandidateAnswer(
+					dto.getUserAnswers().stream().map(Object::toString).collect(Collectors.joining(",")));
 
-            boolean correct = false;
-            if (dto.getAnswers().size() == 1 && (dto.getOptions() == null || dto.getOptions().size() == 0)) {
-                // User entry.
-                if (dto.getAnswers().get(0).equalsIgnoreCase(dto.getUserAnswers().get(0))) {
-                    correct = true;
-                }
-            } else {
-                if (dto.getAnswers().size() == 1) {
-                    // Single choice.
-                    if (dto.getAnswers().get(0).equalsIgnoreCase(dto.getUserAnswers().get(0))) {
-                        correct = true;
-                    }
-                } else {
-                    // Multiple choice.
-                    int correctAnswerCount = 0;
-                    for (int j = 0; j < dto.getAnswers().size(); j++) {
-                        String questionAnswer = dto.getAnswers().get(j);
+			boolean correct = false;
+			if (dto.getAnswers().size() == 1 && (dto.getOptions() == null || dto.getOptions().size() == 0)) {
+				// User entry.
+				if (dto.getAnswers().get(0).equalsIgnoreCase(dto.getUserAnswers().get(0))) {
+					correct = true;
+				}
+			} else {
+				if (dto.getAnswers().size() == 1) {
+					// Single choice.
+					if (dto.getAnswers().get(0).equalsIgnoreCase(dto.getUserAnswers().get(0))) {
+						correct = true;
+					}
+				} else {
+					// Multiple choice.
+					int correctAnswerCount = 0;
+					for (int j = 0; j < dto.getAnswers().size(); j++) {
+						String questionAnswer = dto.getAnswers().get(j);
 
-                        for (int i = 0; i < dto.getUserAnswers().size(); i++) {
-                            String userAnswer = dto.getUserAnswers().get(i);
-                            if (questionAnswer.equalsIgnoreCase(userAnswer)) {
-                                correctAnswerCount++;
-                            }
-                        }
-                    }
-                    if (correctAnswerCount == dto.getAnswers().size()) {
-                        correct = true;
-                    }
-                }
-            }
-            if (correct) {
-                templateDto.setCorrect("Yes");
-                score++;
-            } else {
-                templateDto.setCorrect("No");
-            }
-            resultList.add(templateDto);
-        }
-        data.put("candidate_score", score + " out of " + body.length);
-        data.put("answertable", resultList);
+						for (int i = 0; i < dto.getUserAnswers().size(); i++) {
+							String userAnswer = dto.getUserAnswers().get(i);
+							if (questionAnswer.equalsIgnoreCase(userAnswer)) {
+								correctAnswerCount++;
+							}
+						}
+					}
+					if (correctAnswerCount == dto.getAnswers().size()) {
+						correct = true;
+					}
+				}
+			}
+			if (correct) {
+				templateDto.setCorrect("Yes");
+				score++;
+			} else {
+				templateDto.setCorrect("No");
+			}
+			resultList.add(templateDto);
+		}
+		data.put("candidate_score", score + " out of " + body.length);
+		data.put("answertable", resultList);
 
-        String fileName = dataResultOutputFolder + File.separator + user.getName() + " " + fileFormatterStr + ".pdf";
-        try {
-            pdfGenaratorUtil.createPdf("result", dataFontFile, fileName, data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		String fileName = dataResultOutputFolder + File.separator + user.getName() + " " + fileFormatterStr + ".pdf";
+		try {
+			pdfGenaratorUtil.createPdf("result", dataFontFile, fileName, data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

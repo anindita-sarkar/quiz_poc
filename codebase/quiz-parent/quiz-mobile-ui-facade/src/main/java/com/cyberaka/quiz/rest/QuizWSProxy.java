@@ -8,20 +8,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 //@FeignClient(name = "quiz-ws", url="localhost:8000")
-@FeignClient(name = "quiz-ws")
+//@FeignClient(name = "quiz-ws")
+@FeignClient(name = "quiz-netflix-zuul-api-gateway-server")
 @RibbonClient(name = "quiz-ws")
 public interface QuizWSProxy {
-	@GetMapping("/login")
+	@GetMapping("/quiz-ws/login")
 	public ResponseEntity<String> login(@RequestParam("userName") String userName,
 			@RequestParam("userPassword") String userPassword);
 
-	@GetMapping("/topics")
+	@GetMapping("/quiz-ws/topics")
 	public ResponseEntity<String> listTopics();
 
-	@GetMapping("/subtopics/{topicID}")
+	@GetMapping("/quiz-ws/subtopics/{topicID}")
 	public ResponseEntity<String> findByTopic(@PathVariable("topicID") int topicId);
 
-	@GetMapping("/quiz/{topicId}/{subTopicId}/{level}/{count}")
+	@GetMapping("/quiz-ws/quiz/{topicId}/{subTopicId}/{level}/{count}")
 	public ResponseEntity<String> getQuiz(@PathVariable("topicId") int topicId,
 			@PathVariable("subTopicId") int subTopicId, @PathVariable("level") int level,
 			@PathVariable("count") int count);

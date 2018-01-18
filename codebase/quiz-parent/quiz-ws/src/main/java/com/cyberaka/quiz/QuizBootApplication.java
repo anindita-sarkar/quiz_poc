@@ -2,20 +2,11 @@ package com.cyberaka.quiz;
 
 import java.util.logging.Logger;
 
-import javax.sql.DataSource;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Entry point into the quiz boot application.
@@ -47,7 +38,11 @@ public class QuizBootApplication { // extends SpringBootServletInitializer {
 		LOG.info("Quiz Boot Applicaiton");
 	}
 
-	
+	@Bean
+	public AlwaysSampler defaultSampler() {
+		return new AlwaysSampler();
+	}
+
 
 	
 }

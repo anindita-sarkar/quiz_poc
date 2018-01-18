@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
 @RestController
 public class UserController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,14 +37,30 @@ public class UserController {
 		logger.info(">>"+response);
 		return response;
 	}
+	
+	@GetMapping("/url")
+	public String getUrl() {
+		
+		return env.getProperty("ws.url");
+	}
 
 	@GetMapping("/login-feign")
 	public ResponseEntity<String> loginFeign(@RequestParam("userName") String userName,
 			@RequestParam("userPassword") String userPassword) {
 
-		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<String> response = proxy.login(userName, userPassword);
 		logger.info(">>"+response);
 		return response;
 	}
+	
+	@GetMapping("/fault-tolerance-example")
+	@HystrixCommand(fallbackMethod="fallbackRetrieveConfiguration")
+	public String retrieveConfiguration() {
+		throw new RuntimeException("Not available");
+	}
+
+	public String fallbackRetrieveConfiguration() {
+		return "wwww.google.com";
+	}
+	
 }

@@ -1,10 +1,12 @@
 package com.cyberaka.quiz.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "quiz_question")
-public class Question {
+public class Question implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

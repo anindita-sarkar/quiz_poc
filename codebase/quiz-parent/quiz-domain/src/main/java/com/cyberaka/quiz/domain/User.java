@@ -1,10 +1,12 @@
 package com.cyberaka.quiz.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "quiz_user", uniqueConstraints = @UniqueConstraint(name="unique_user_id", columnNames = {"user_name"}))
-public class User {
+public class User implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", nullable = false)

@@ -4,8 +4,8 @@ import com.cyberaka.quiz.domain.User;
 
 public interface UserService {
 
-    public User login(String userName, String password);
+	public User login(String userName, String password);
 
-    public User find(int id);
+	public User find(int id);
 
 }
